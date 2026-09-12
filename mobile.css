@@ -1,0 +1,90 @@
+/* Mobile bedside layer for IDSA 2026 MDRGNB Guide.
+   Loaded after the main inline stylesheet; desktop layout remains unchanged. */
+
+.mobile-bottom-nav,.mobile-top-btn,.mobile-scroll-note{display:none}
+
+@media (max-width:760px){
+  :root{--mobile-nav-h:66px}
+  html{scroll-padding-top:10px}
+  body{font-size:15px;padding-bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 8px)}
+  header{padding:22px 16px 18px}
+  header .wrap{padding:0}
+  h1{font-size:28px;line-height:1.12;margin-bottom:9px}
+  .lead{font-size:13px;line-height:1.55}
+
+  /* Desktop top navigation is replaced by thumb-friendly bottom navigation. */
+  body>nav{display:none!important}
+  main{padding:10px 10px 18px}
+  .panel{padding:14px;margin-bottom:14px;border-radius:13px}
+  .qcard,.hcard,.drugcard,.syncard{border-radius:13px}
+  h2{font-size:22px;line-height:1.25}
+  .notice{padding:12px 13px;font-size:13px;margin-bottom:13px}
+  .kicker{font-size:10px}
+
+  /* Bedside inputs: one column, large tap targets. */
+  .wizard,.alg-grid,.op-grid,.result-grid,.caveats,.hierarchy,.druggrid,.roles,.syncards,.unsupported-grid,.nuance-grid,.qa-stats{grid-template-columns:1fr!important}
+  select,.search,input[type="text"],input[type="search"]{min-height:46px;font-size:16px;padding:11px 12px}
+  button,.go,.pill,.official-links a{min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .go{width:100%;border-radius:11px}
+  .toolbar,.alg-actions{display:grid;grid-template-columns:1fr;gap:8px}
+  .toolbar button,.alg-actions button{width:100%}
+
+  /* Home and source links. */
+  .homegrid{grid-template-columns:1fr!important;gap:8px!important}
+  .homecard{padding:14px!important}
+  .official-source-box{padding:13px;margin:10px 0 14px}
+  .official-source-box h3{font-size:17px;line-height:1.35}
+  .official-links{display:grid!important;grid-template-columns:1fr;gap:7px!important}
+  .official-links a{width:100%;text-align:center}
+
+  /* Question cards: keep full content; Rationale remains native <details>. */
+  .qcard{padding:14px;margin:10px 0}
+  .qtop{grid-template-columns:1fr!important;gap:7px}
+  .qno{display:inline-block;width:max-content}
+  .qcard h3{font-size:17px;line-height:1.45}
+  .approach{padding:12px;font-size:13px;overflow-wrap:anywhere}
+  details{margin-top:9px}
+  summary{min-height:40px;display:flex;align-items:center}
+  .rationale{font-size:13px;line-height:1.62;overflow-wrap:anywhere}
+
+  /* Algorithm and one-page result cards. */
+  .opcards{grid-template-columns:1fr!important}
+  .op-wide,.op-source,.sourcebox{grid-column:auto!important}
+  .op-title h3{font-size:20px}
+  .caveat{padding:11px!important}
+  .op-caveats{display:grid!important;grid-template-columns:1fr 1fr;gap:7px}
+  .op-caveats label{min-height:42px;display:flex;align-items:center;gap:5px}
+
+  /* Wide clinical tables remain complete and horizontally scrollable. */
+  .matrixwrap,.bpwrap,.synmatrix{position:relative;max-width:100%;overflow-x:auto!important;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+  .matrixwrap table{min-width:1250px!important}
+  .bpwrap table{min-width:900px!important}
+  .synmatrix table{min-width:1000px!important}
+  th,td{padding:8px 7px}
+  tbody th{min-width:150px}
+  .mobile-scroll-note{display:block;position:sticky;left:0;width:max-content;max-width:92%;margin:0 0 7px;padding:5px 9px;border-radius:999px;background:#edf5fa;border:1px solid #cfe0ec;color:#286287;font-size:11px;font-weight:800;z-index:5}
+
+  /* Pager is redundant with persistent mobile bottom navigation. */
+  .pager{display:none!important}
+
+  /* Fixed bottom navigation. */
+  .mobile-bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:0;right:0;bottom:0;height:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom));padding:5px 6px calc(5px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);box-shadow:0 -5px 18px rgba(14,41,63,.10);z-index:999}
+  .mobile-bottom-nav button{min-width:0;min-height:52px;padding:4px 2px;border:0;background:transparent;border-radius:10px;color:#53616d;font-size:10px;font-weight:800;display:flex;flex-direction:column;gap:1px;align-items:center;justify-content:center}
+  .mobile-bottom-nav button .mi{font-size:19px;line-height:1}
+  .mobile-bottom-nav button.active{background:#eaf3fb;color:var(--nav)}
+
+  .mobile-top-btn{display:flex;position:fixed;right:12px;bottom:calc(var(--mobile-nav-h) + env(safe-area-inset-bottom) + 14px);width:42px;height:42px;border-radius:50%;padding:0;background:#fff;color:var(--nav);border:1px solid var(--line);box-shadow:0 4px 14px rgba(20,40,60,.16);z-index:998;opacity:0;pointer-events:none;transition:.2s}
+  .mobile-top-btn.show{opacity:1;pointer-events:auto}
+
+  footer{padding:0 12px calc(var(--mobile-nav-h) + 22px);font-size:11px}
+}
+
+@media (max-width:390px){
+  h1{font-size:25px}
+  .op-caveats{grid-template-columns:1fr}
+  .mobile-bottom-nav button{font-size:9px}
+}
+
+@media (min-width:761px){
+  .mobile-bottom-nav,.mobile-top-btn,.mobile-scroll-note{display:none!important}
+}
