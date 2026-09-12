@@ -23,7 +23,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
-          import re, sys
+          import re
 
           required = ['index.html', 'mobile.css', 'mobile.js', '.nojekyll']
           missing = [p for p in required if not Path(p).exists()]
@@ -39,12 +39,13 @@ jobs:
               'closing body': '</body>' in html.lower(),
               'closing html': '</html>' in html.lower(),
           }
-          failed = [k for k,v in checks.items() if not v]
+          failed = [k for k, v in checks.items() if not v]
           if failed:
               raise SystemExit('Site validation failed: ' + ', '.join(failed))
 
           ids = re.findall(r'\bid=["\']([^"\']+)', html)
-          dup = sorted({x for x in ids if ids.count(x) > 1})
+          seen = set()
+          dup = sorted({x for x in ids if x in seen or seen.add(x)})
           if dup:
               print('WARNING: duplicate IDs detected:', ', '.join(dup[:30]))
           print('Publish validation passed.')
@@ -58,8 +59,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Configure Pages
+      - name: Configure / enable Pages
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
