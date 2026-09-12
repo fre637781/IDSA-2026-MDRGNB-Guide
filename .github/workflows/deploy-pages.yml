@@ -1,0 +1,69 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate publishable site
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, sys
+
+          required = ['index.html', 'mobile.css', 'mobile.js', '.nojekyll']
+          missing = [p for p in required if not Path(p).exists()]
+          if missing:
+              raise SystemExit(f'Missing required files: {missing}')
+
+          html = Path('index.html').read_text(encoding='utf-8')
+          checks = {
+              'doctype': '<!doctype html>' in html.lower(),
+              'viewport': 'name="viewport"' in html,
+              'mobile css': 'href="mobile.css"' in html,
+              'mobile js': 'src="mobile.js"' in html,
+              'closing body': '</body>' in html.lower(),
+              'closing html': '</html>' in html.lower(),
+          }
+          failed = [k for k,v in checks.items() if not v]
+          if failed:
+              raise SystemExit('Site validation failed: ' + ', '.join(failed))
+
+          ids = re.findall(r'\bid=["\']([^"\']+)', html)
+          dup = sorted({x for x in ids if ids.count(x) > 1})
+          if dup:
+              print('WARNING: duplicate IDs detected:', ', '.join(dup[:30]))
+          print('Publish validation passed.')
+          PY
+
+  deploy:
+    needs: validate
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
