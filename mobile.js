@@ -4,6 +4,40 @@
 
   function isMobile(){ return window.matchMedia('(max-width:760px)').matches; }
 
+  function ensureHeadMetadata(){
+    if(!document.querySelector('link[rel="manifest"]')){
+      var manifest=document.createElement('link');
+      manifest.rel='manifest'; manifest.href='manifest.webmanifest';
+      document.head.appendChild(manifest);
+    }
+    if(!document.querySelector('meta[name="theme-color"]')){
+      var theme=document.createElement('meta');
+      theme.name='theme-color'; theme.content='#0d3556';
+      document.head.appendChild(theme);
+    }
+    if(!document.querySelector('meta[name="description"]')){
+      var description=document.createElement('meta');
+      description.name='description';
+      description.content='Independent bedside reformatting of the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections.';
+      document.head.appendChild(description);
+    }
+    if(!document.querySelector('link[rel="canonical"]')){
+      var canonical=document.createElement('link');
+      canonical.rel='canonical';
+      canonical.href='https://fre637781.github.io/IDSA-2026-MDRGNB-Guide/';
+      document.head.appendChild(canonical);
+    }
+  }
+
+  function registerServiceWorker(){
+    if(!('serviceWorker' in navigator)) return;
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('./service-worker.js').catch(function(err){
+        console.warn('Service worker registration failed:',err);
+      });
+    });
+  }
+
   function makeBottomNav(){
     if(document.querySelector('.mobile-bottom-nav')) return;
     var nav=document.createElement('div');
@@ -111,12 +145,14 @@
   }
 
   function init(){
+    ensureHeadMetadata();
     makeBottomNav();
     makeTopButton();
     addScrollHints();
     hookShowPage();
     installAnchorRouter();
     if(!resolveAnchorHash(location.hash,false)) syncActive(detectCurrentPage());
+    registerServiceWorker();
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
