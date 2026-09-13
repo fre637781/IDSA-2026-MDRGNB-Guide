@@ -44,10 +44,29 @@ jobs:
               raise SystemExit('Site validation failed: ' + ', '.join(failed))
 
           ids = re.findall(r'\bid=["\']([^"\']+)', html)
+          idset = set(ids)
           seen = set()
           dup = sorted({x for x in ids if x in seen or seen.add(x)})
           if dup:
-              print('WARNING: duplicate IDs detected:', ', '.join(dup[:30]))
+              raise SystemExit('Duplicate IDs detected: ' + ', '.join(dup[:30]))
+
+          qids = sorted(x for x in idset if re.fullmatch(r'q[1-6]-\d+', x))
+          if len(qids) != 41:
+              raise SystemExit(f'Expected 41 question anchors, found {len(qids)}')
+
+          hrefs = re.findall(r'href=["\']#([^"\']+)', html)
+          broken = sorted({h for h in hrefs if h and not h.startswith('page=') and h not in idset})
+          if broken:
+              raise SystemExit('Broken internal anchors: ' + ', '.join(broken[:50]))
+
+          page_ids = set(re.findall(r'data-page=["\']([^"\']+)', html))
+          expected_pages = {'home','bedside','pathogen','drug','syndrome','guidance','reference','qa'}
+          missing_pages = sorted(expected_pages - page_ids)
+          if missing_pages:
+              raise SystemExit('Missing page panes: ' + ', '.join(missing_pages))
+
+          external = sorted(set(re.findall(r'href=["\'](https?://[^"\']+)', html)))
+          print(f'QA: {len(ids)} IDs; 41/41 question anchors; {len(hrefs)} internal links; {len(external)} external links.')
           print('Publish validation passed.')
           PY
 
