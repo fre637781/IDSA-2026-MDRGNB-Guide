@@ -23,14 +23,19 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import json
           import re
 
-          required = ['index.html', 'mobile.css', 'mobile.js', '.nojekyll']
+          required = ['index.html', 'mobile.css', 'mobile.js', '.nojekyll', 'manifest.webmanifest', 'service-worker.js']
           missing = [p for p in required if not Path(p).exists()]
           if missing:
               raise SystemExit(f'Missing required files: {missing}')
 
           html = Path('index.html').read_text(encoding='utf-8')
+          js = Path('mobile.js').read_text(encoding='utf-8')
+          sw = Path('service-worker.js').read_text(encoding='utf-8')
+          manifest = json.loads(Path('manifest.webmanifest').read_text(encoding='utf-8'))
+
           checks = {
               'doctype': '<!doctype html>' in html.lower(),
               'viewport': 'name="viewport"' in html,
@@ -38,6 +43,11 @@ jobs:
               'mobile js': 'src="mobile.js"' in html,
               'closing body': '</body>' in html.lower(),
               'closing html': '</html>' in html.lower(),
+              'manifest hook': 'manifest.webmanifest' in js,
+              'service worker registration': 'serviceWorker.register' in js and 'service-worker.js' in js,
+              'service worker shell': 'manifest.webmanifest' in sw and 'mobile.css' in sw and 'mobile.js' in sw,
+              'manifest name': bool(manifest.get('name')),
+              'manifest standalone': manifest.get('display') == 'standalone',
           }
           failed = [k for k, v in checks.items() if not v]
           if failed:
@@ -69,7 +79,7 @@ jobs:
               raise SystemExit('Missing page panes: ' + ', '.join(missing_pages))
 
           external = sorted(set(re.findall(r'<a\b[^>]*\bhref=["\'](https?://[^"\']+)', markup, flags=re.I)))
-          print(f'QA: {len(ids)} IDs; 41/41 question anchors; {len(hrefs)} static internal links; {len(external)} external links.')
+          print(f'QA: {len(ids)} IDs; 41/41 question anchors; {len(hrefs)} static internal links; {len(external)} external links; PWA assets valid.')
           print('Publish validation passed.')
           PY
 
