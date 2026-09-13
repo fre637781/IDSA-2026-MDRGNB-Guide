@@ -43,7 +43,10 @@ jobs:
           if failed:
               raise SystemExit('Site validation failed: ' + ', '.join(failed))
 
-          ids = re.findall(r'\bid=["\']([^"\']+)', html)
+          # Static DOM view for anchor validation; ignore JS template strings inside <script> blocks.
+          markup = re.sub(r'<script\b[^>]*>.*?</script>', '', html, flags=re.I | re.S)
+
+          ids = re.findall(r'\bid=["\']([^"\']+)', markup)
           idset = set(ids)
           seen = set()
           dup = sorted({x for x in ids if x in seen or seen.add(x)})
@@ -54,19 +57,18 @@ jobs:
           if len(qids) != 41:
               raise SystemExit(f'Expected 41 question anchors, found {len(qids)}')
 
-          # Validate literal/static in-document anchors only. Dynamic JS-generated hrefs are runtime-tested separately.
-          hrefs = re.findall(r'<a\b[^>]*\bhref=["\']#([A-Za-z0-9_.:-]+)["\']', html, flags=re.I)
+          hrefs = re.findall(r'<a\b[^>]*\bhref=["\']#([A-Za-z0-9_.:-]+)["\']', markup, flags=re.I)
           broken = sorted({h for h in hrefs if h and not h.startswith('page=') and h not in idset})
           if broken:
               raise SystemExit('Broken static internal anchors: ' + ', '.join(broken[:50]))
 
-          page_ids = set(re.findall(r'data-page=["\']([^"\']+)', html))
+          page_ids = set(re.findall(r'data-page=["\']([^"\']+)', markup))
           expected_pages = {'home','bedside','pathogen','drug','syndrome','guidance','reference','qa'}
           missing_pages = sorted(expected_pages - page_ids)
           if missing_pages:
               raise SystemExit('Missing page panes: ' + ', '.join(missing_pages))
 
-          external = sorted(set(re.findall(r'<a\b[^>]*\bhref=["\'](https?://[^"\']+)', html, flags=re.I)))
+          external = sorted(set(re.findall(r'<a\b[^>]*\bhref=["\'](https?://[^"\']+)', markup, flags=re.I)))
           print(f'QA: {len(ids)} IDs; 41/41 question anchors; {len(hrefs)} static internal links; {len(external)} external links.')
           print('Publish validation passed.')
           PY
