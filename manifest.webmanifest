@@ -1,0 +1,11 @@
+{
+  "name": "IDSA 2026 MDRGNB Interactive Bedside Guide",
+  "short_name": "MDRGNB Guide",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fa",
+  "theme_color": "#0d3556",
+  "description": "Independent bedside reformatting of the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections.",
+  "lang": "zh-Hant"
+}
