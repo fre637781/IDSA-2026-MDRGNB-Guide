@@ -26,6 +26,12 @@ jobs:
           s = p.read_text(encoding='utf-8')
           changed = False
 
+          old_title = '<title>IDSA 2026 MDRGNB Interactive Bedside Guide — Final Validated Edition · Single Navigation</title>'
+          new_title = '<title>IDSA 2026 MDRGNB Interactive Bedside Guide</title>'
+          if old_title in s:
+              s = s.replace(old_title, new_title, 1)
+              changed = True
+
           head_items = [
               '<meta name="description" content="Interactive bedside guide for the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections, including ESBL-E, AmpC-E, CRE, DTR P. aeruginosa, CRAB, and S. maltophilia.">',
               '<meta name="theme-color" content="#0d3556">',
@@ -59,5 +65,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Integrate static web metadata and assets'
+          git commit -m 'Clean public title and integrate web assets'
           git push
