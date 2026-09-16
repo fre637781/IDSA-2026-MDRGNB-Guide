@@ -28,12 +28,26 @@ jobs:
           s = p.read_text(encoding='utf-8')
           original = s
 
-          # Stable public title.
+          # Stable public title and concise public header.
           s = re.sub(
               r'<title>IDSA 2026 MDRGNB Interactive Bedside Guide(?:\s*[—·-].*?)?</title>',
               '<title>IDSA 2026 MDRGNB Interactive Bedside Guide</title>',
               s,
               count=1,
+          )
+          s = re.sub(
+              r'<h1>IDSA 2026 MDRGNB<br>Interactive Bedside Guide.*?</h1>',
+              '<h1>IDSA 2026 MDRGNB<br>Interactive Bedside Guide</h1>',
+              s,
+              count=1,
+              flags=re.S,
+          )
+          s = re.sub(
+              r'<div class="lead">.*?</div>',
+              '<div class="lead">Bedside navigation for the 2026 IDSA Guidance on antimicrobial-resistant Gram-negative infections, with organism-, drug-, syndrome-, and question-based views.</div>',
+              s,
+              count=1,
+              flags=re.S,
           )
 
           # Home: remove construction/navigation history; retain useful entry points and official source notice.
@@ -46,29 +60,41 @@ jobs:
               "<div class='homecard' onclick=\"showPage('qa')\"><h3>Clinical Nuances</h3><p>重要 caveats、Rationale nuances 與 Why Not?。</p></div>",
           )
 
-          # Bedside: remove the build-validation dashboard from the public clinical workflow.
-          s = re.sub(
-              r'<section class="panel final-validation" id="final-validation">.*?</section>',
-              '',
-              s,
-              count=1,
-              flags=re.S,
+          # Bedside: remove build-validation UI and development version label; keep practical usage and source hierarchy.
+          s = re.sub(r'<section class="panel final-validation" id="final-validation">.*?</section>', '', s, count=1, flags=re.S)
+          s = s.replace('<div class="kicker">v9 · ONE-PAGE BEDSIDE RESULT</div>', '<div class="kicker">BEDSIDE RESULT</div>')
+          s = s.replace(
+              '<div class="notice"><b>使用方式：</b>選擇 organism / resistance group 與 syndrome / mechanism。結果會把 Preferred、Alternative、Not suggested、Dose、Breakpoint/MIC、Critical caveats 與完整 IDSA Suggested approach 集中在同一頁。整理欄位是 navigation aid；最下方 source wording 才是 guideline 原始 recommendation。</div>',
+              '<div class="notice"><b>使用方式：</b>選擇 organism / resistance group 與 syndrome / mechanism，查看 Preferred、Alternative、Not suggested、Dose、Breakpoint/MIC、Critical caveats 與對應的 IDSA Suggested approach。治療決策請以完整 Suggested approach 與 Rationale 為準。</div>',
           )
 
-          # QA page: retain clinically useful nuances, remove internal source-audit/build verification UI.
-          s = re.sub(
-              r'<section class="panel qa-panel" id="qa">.*?</section>',
-              '',
-              s,
-              count=1,
-              flags=re.S,
+          # Pathogen / Algorithm: remove implementation commentary while preserving clinically relevant limitations.
+          s = re.sub(r'<span class="v5tag">.*?</span>', '', s, flags=re.S)
+          s = re.sub(r'<div class="v5tag">.*?</div>', '', s, flags=re.S)
+          s = s.replace(
+              '<div class="notice"><b>安全設計：</b>這個 algorithm 不自行創造 treatment recommendation。它依你選的 clinical situation 導向 guideline 對應 question，最後顯示 <b>完整 Suggested approach 原文</b>。Patient caveats 只提醒你哪些條件不能忽略，不會偷偷改寫 IDSA recommendation。</div>',
+              '<div class="notice"><b>使用方式：</b>依 organism、syndrome / resistance mechanism 與 patient-specific caveats 導向對應 clinical question。請同時閱讀完整 Suggested approach 與 Rationale。</div>',
           )
+
+          # Drug Index: remove development-time phrasing such as "現在也可以".
+          s = s.replace(
+              '<p>除了從 organism 找 treatment，現在也可以反向從 drug 查：它在哪些情境是 Preferred、Alternative、Not suggested、其 Adult dosing、breakpoint quick view，以及所有相關 clinical questions。</p>',
+              '<p>從 drug 查看其在不同 clinical situations 的 Preferred、Alternative、Not suggested roles，以及 Adult dosing、breakpoint quick view 與相關 clinical questions。</p>',
+          )
+
+          # Syndrome Index: keep the clinically important scope limitation, remove first-person/build commentary.
+          s = s.replace(
+              '<div class="notice"><b>重要：</b>這一頁只把 guideline 真正有支持的 syndrome pathway 重新排列。若 guideline 沒有 dedicated syndrome recommendation，我不會自行用一般感染症知識補出 treatment algorithm，而會明確標示「沒有 dedicated question」。</div>',
+              '<div class="notice"><b>重要：</b>本頁僅呈現 guideline 有明確支持的 syndrome pathways；若沒有 dedicated syndrome recommendation，會標示「沒有 dedicated question」。</div>',
+          )
+
+          # Clinical Nuances: remove internal audit UI while retaining clinically meaningful nuances.
+          s = re.sub(r'<section class="panel qa-panel" id="qa">.*?</section>', '', s, count=1, flags=re.S)
           s = s.replace("data-target='qa' onclick=\"showPage('qa')\">QA / Nuances</button>", "data-target='qa' onclick=\"showPage('qa')\">Clinical Nuances</button>")
           s = s.replace('<div class="kicker">RATIONALE MATTERS</div><h2>Critical Nuances That Change the Bedside Choice</h2>\n<p>這些不是新增 guideline recommendation，而是把原本藏在 Rationale 中、會改變實際選藥順位或適用情境的內容拉到前面。</p>', '<div class="kicker">CLINICAL NUANCES</div><h2>Critical Nuances That Change the Bedside Choice</h2>')
 
-          # Remove visible development-version badges without touching clinical wording/data.
-          s = re.sub(r'<span class="v5tag">.*?</span>', '', s, flags=re.S)
-          s = re.sub(r'<div class="v5tag">.*?</div>', '', s, flags=re.S)
+          # Keep clinical content wording intact. Only simplify the repeated UI caption on Suggested approach cards.
+          s = s.replace('SUGGESTED APPROACH — ORIGINAL WORDING PRESERVED', 'SUGGESTED APPROACH')
 
           head_items = [
               '<meta name="description" content="Interactive bedside guide for the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections, including ESBL-E, AmpC-E, CRE, DTR P. aeruginosa, CRAB, and S. maltophilia.">',
@@ -101,5 +127,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Remove construction notes from public guide'
+          git commit -m 'Continue public copy cleanup'
           git push
