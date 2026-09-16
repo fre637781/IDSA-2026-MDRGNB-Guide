@@ -18,19 +18,57 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject web assets and static metadata into index.html
+      - name: Integrate web assets and clean public-facing build notes
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
+
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          changed = False
+          original = s
 
-          old_title = '<title>IDSA 2026 MDRGNB Interactive Bedside Guide — Final Validated Edition · Single Navigation</title>'
-          new_title = '<title>IDSA 2026 MDRGNB Interactive Bedside Guide</title>'
-          if old_title in s:
-              s = s.replace(old_title, new_title, 1)
-              changed = True
+          # Stable public title.
+          s = re.sub(
+              r'<title>IDSA 2026 MDRGNB Interactive Bedside Guide(?:\s*[—·-].*?)?</title>',
+              '<title>IDSA 2026 MDRGNB Interactive Bedside Guide</title>',
+              s,
+              count=1,
+          )
+
+          # Home: remove construction/navigation history; retain useful entry points and official source notice.
+          s = s.replace(
+              '<div class="kicker">PAGINATED EDITION</div><h2>選擇閱讀方式</h2><p>已移除舊版頂端 navigation，只保留一條主導覽列。Pathogen / Drug / Syndrome 收進 Explore；41 Questions 內僅保留頁面內 pathogen selector。</p>',
+              '<div class="kicker">BEDSIDE GUIDE</div><h2>選擇閱讀方式</h2>',
+          )
+          s = s.replace(
+              "<div class='homecard' onclick=\"showPage('qa')\"><h3>QA / Nuances</h3><p>Final validation、Critical Nuances、Why Not?。</p></div>",
+              "<div class='homecard' onclick=\"showPage('qa')\"><h3>Clinical Nuances</h3><p>重要 caveats、Rationale nuances 與 Why Not?。</p></div>",
+          )
+
+          # Bedside: remove the build-validation dashboard from the public clinical workflow.
+          s = re.sub(
+              r'<section class="panel final-validation" id="final-validation">.*?</section>',
+              '',
+              s,
+              count=1,
+              flags=re.S,
+          )
+
+          # QA page: retain clinically useful nuances, remove internal source-audit/build verification UI.
+          s = re.sub(
+              r'<section class="panel qa-panel" id="qa">.*?</section>',
+              '',
+              s,
+              count=1,
+              flags=re.S,
+          )
+          s = s.replace("data-target='qa' onclick=\"showPage('qa')\">QA / Nuances</button>", "data-target='qa' onclick=\"showPage('qa')\">Clinical Nuances</button>")
+          s = s.replace('<div class="kicker">RATIONALE MATTERS</div><h2>Critical Nuances That Change the Bedside Choice</h2>\n<p>這些不是新增 guideline recommendation，而是把原本藏在 Rationale 中、會改變實際選藥順位或適用情境的內容拉到前面。</p>', '<div class="kicker">CLINICAL NUANCES</div><h2>Critical Nuances That Change the Bedside Choice</h2>')
+
+          # Remove visible development-version badges without touching clinical wording/data.
+          s = re.sub(r'<span class="v5tag">.*?</span>', '', s, flags=re.S)
+          s = re.sub(r'<div class="v5tag">.*?</div>', '', s, flags=re.S)
 
           head_items = [
               '<meta name="description" content="Interactive bedside guide for the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections, including ESBL-E, AmpC-E, CRE, DTR P. aeruginosa, CRAB, and S. maltophilia.">',
@@ -44,26 +82,24 @@ jobs:
                   if '</head>' not in s:
                       raise SystemExit('Missing </head> in index.html')
                   s = s.replace('</head>', item + '\n</head>', 1)
-                  changed = True
 
           js = '<script src="mobile.js" defer></script>'
           if js not in s:
               if '</body>' not in s:
                   raise SystemExit('Missing </body> in index.html')
               s = s.replace('</body>', js + '\n</body>', 1)
-              changed = True
 
-          if changed:
+          if s != original:
               p.write_text(s, encoding='utf-8')
           PY
       - name: Commit integration
         run: |
           if git diff --quiet -- index.html; then
-            echo 'index.html already integrated'
+            echo 'index.html already integrated and cleaned'
             exit 0
           fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Clean public title and integrate web assets'
+          git commit -m 'Remove construction notes from public guide'
           git push
