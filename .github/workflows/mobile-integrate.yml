@@ -1,4 +1,4 @@
-name: Integrate mobile assets
+name: Integrate web assets
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
     paths:
       - 'mobile.css'
       - 'mobile.js'
+      - 'manifest.webmanifest'
+      - 'service-worker.js'
       - '.github/workflows/mobile-integrate.yml'
 
 permissions:
@@ -16,25 +18,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Inject mobile assets into index.html
+      - name: Inject web assets and static metadata into index.html
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          css = '<link rel="stylesheet" href="mobile.css">'
-          js = '<script src="mobile.js" defer></script>'
           changed = False
-          if css not in s:
-              if '</head>' not in s:
-                  raise SystemExit('Missing </head> in index.html')
-              s = s.replace('</head>', css + '\n</head>', 1)
-              changed = True
+
+          head_items = [
+              '<meta name="description" content="Interactive bedside guide for the 2026 IDSA guidance on antimicrobial-resistant Gram-negative infections, including ESBL-E, AmpC-E, CRE, DTR P. aeruginosa, CRAB, and S. maltophilia.">',
+              '<meta name="theme-color" content="#0d3556">',
+              '<link rel="canonical" href="https://fre637781.github.io/IDSA-2026-MDRGNB-Guide/">',
+              '<link rel="manifest" href="manifest.webmanifest">',
+              '<link rel="stylesheet" href="mobile.css">',
+          ]
+          for item in head_items:
+              if item not in s:
+                  if '</head>' not in s:
+                      raise SystemExit('Missing </head> in index.html')
+                  s = s.replace('</head>', item + '\n</head>', 1)
+                  changed = True
+
+          js = '<script src="mobile.js" defer></script>'
           if js not in s:
               if '</body>' not in s:
                   raise SystemExit('Missing </body> in index.html')
               s = s.replace('</body>', js + '\n</body>', 1)
               changed = True
+
           if changed:
               p.write_text(s, encoding='utf-8')
           PY
@@ -47,5 +59,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Integrate mobile responsive assets into index'
+          git commit -m 'Integrate static web metadata and assets'
           git push
