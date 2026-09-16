@@ -133,9 +133,9 @@ header nav:not(#pageTabs), .topnav:not(#pageTabs), .legacy-nav, .main-nav-legacy
   </div>
   <button data-target='guidance' onclick="showPage('guidance')">41 Questions</button>
   <button data-target='reference' onclick="showPage('reference')">Dose / Breakpoints</button>
-  <button data-target='qa' onclick="showPage('qa')">QA / Nuances</button>
+  <button data-target='qa' onclick="showPage('qa')">Clinical Nuances</button>
 </div>
-<div class='page-pane active' id='page-home' data-page='home'><section class="panel"><div class="kicker">PAGINATED EDITION</div><h2>選擇閱讀方式</h2><p>已移除舊版頂端 navigation，只保留一條主導覽列。Pathogen / Drug / Syndrome 收進 Explore；41 Questions 內僅保留頁面內 pathogen selector。</p>
+<div class='page-pane active' id='page-home' data-page='home'><section class="panel"><div class="kicker">BEDSIDE GUIDE</div><h2>選擇閱讀方式</h2>
 <div class="official-source-box">
   <div class="kicker">OFFICIAL SOURCE</div>
   <h3 style="margin:4px 0 8px">IDSA 2026 Guidance on the Treatment of Antimicrobial-Resistant Gram-Negative Infections</h3>
@@ -146,25 +146,7 @@ header nav:not(#pageTabs), .topnav:not(#pageTabs), .legacy-nav, .main-nav-legacy
     <a href="https://www.idsociety.org/globalassets/idsa/practice-guidelines/amr-guidance/5.0/amr-2026-update-references-12.pdf" target="_blank" rel="noopener noreferrer">Official References ↗</a>
   </div>
 </div>
-<div class="homegrid"><div class='homecard' onclick="showPage('bedside')"><h3>Bedside Result</h3><p>最快速的查房單頁結果。</p></div><div class='homecard' onclick="showPage('pathogen')"><h3>Pathogen / Algorithm</h3><p>從 resistance group 與 mechanism 進入。</p></div><div class='homecard' onclick="showPage('drug')"><h3>Drug Index</h3><p>從 antibiotic 反查 guideline role。</p></div><div class='homecard' onclick="showPage('syndrome')"><h3>Syndrome Index</h3><p>從 UTI、pneumonia、bacteremia 等進入。</p></div><div class='homecard' onclick="showPage('guidance')"><h3>41 Questions</h3><p>完整 Suggested approach + Rationale。</p></div><div class='homecard' onclick="showPage('reference')"><h3>Dose / Breakpoints</h3><p>Adult dosing 與 CLSI breakpoint。</p></div><div class='homecard' onclick="showPage('qa')"><h3>QA / Nuances</h3><p>Final validation、Critical Nuances、Why Not?。</p></div></div></section><div class='pager'><span></span><button onclick="showPage('bedside')">下一頁 →</button></div></div><div class='page-pane ' id='page-bedside' data-page='bedside'><section class="panel final-validation" id="final-validation">
-<div class="kicker">FINAL CLINICAL VALIDATION</div><h2>Source-fidelity & Safety Check</h2>
-<div class="valgrid">
- <div><strong>41 / 41</strong><span>Clinical questions retained and Suggested approach source-matched</span></div>
- <div><strong>32</strong><span>Antibiotic rows in complete Table 2 quick reference</span></div>
- <div><strong>10</strong><span>High-risk treatment pathways specifically re-validated</span></div>
- <div><strong>0</strong><span>Invented renal/RRT dosing algorithms</span></div>
-</div>
-<div class="notice"><b>Final status:</b> this site is an unofficial, source-faithful bedside navigator based on the IDSA 2026 Guidance. The official IDSA webpage remains the authoritative source. Compact cards never supersede the original Suggested approach; MIC/AST, infection site, source control, severity, renal/hepatic function and the full Rationale must still be considered.</div>
-<details><summary>查看 Final Validation 的重點</summary>
-<div class="validation-list">
-<p><b>ESBL-E:</b> critical illness / hypoalbuminemia carbapenem nuance retained.</p>
-<p><b>AmpC-E:</b> cefepime MIC ≤8 µg/mL condition retained.</p>
-<p><b>CRE:</b> non-carbapenemase MIC logic, KPC ranking nuance, NDM and OXA-48 mechanism-specific restrictions retained.</p>
-<p><b>DTR P. aeruginosa:</b> pneumonia-specific ceftolozane-tazobactam preference and carbapenemase-specific pathways retained.</p>
-<p><b>CRAB:</b> sulbactam-durlobactam + carbapenem remains preferred; high-dose ampicillin-sulbactam remains a temporary bridge.</p>
-<p><b>S. maltophilia:</b> cefiderocol monotherapy preference retains its animal-model evidence caveat.</p>
-</div></details>
-</section><section class="panel onepage" id="onepage">
+<div class="homegrid"><div class='homecard' onclick="showPage('bedside')"><h3>Bedside Result</h3><p>最快速的查房單頁結果。</p></div><div class='homecard' onclick="showPage('pathogen')"><h3>Pathogen / Algorithm</h3><p>從 resistance group 與 mechanism 進入。</p></div><div class='homecard' onclick="showPage('drug')"><h3>Drug Index</h3><p>從 antibiotic 反查 guideline role。</p></div><div class='homecard' onclick="showPage('syndrome')"><h3>Syndrome Index</h3><p>從 UTI、pneumonia、bacteremia 等進入。</p></div><div class='homecard' onclick="showPage('guidance')"><h3>41 Questions</h3><p>完整 Suggested approach + Rationale。</p></div><div class='homecard' onclick="showPage('reference')"><h3>Dose / Breakpoints</h3><p>Adult dosing 與 CLSI breakpoint。</p></div><div class='homecard' onclick="showPage('qa')"><h3>Clinical Nuances</h3><p>重要 caveats、Rationale nuances 與 Why Not?。</p></div></div></section><div class='pager'><span></span><button onclick="showPage('bedside')">下一頁 →</button></div></div><div class='page-pane ' id='page-bedside' data-page='bedside'><section class="panel onepage" id="onepage">
 <div class="kicker">v9 · ONE-PAGE BEDSIDE RESULT</div><h2>One-page Treatment Result</h2>
 <div class="notice"><b>使用方式：</b>選擇 organism / resistance group 與 syndrome / mechanism。結果會把 Preferred、Alternative、Not suggested、Dose、Breakpoint/MIC、Critical caveats 與完整 IDSA Suggested approach 集中在同一頁。整理欄位是 navigation aid；最下方 source wording 才是 guideline 原始 recommendation。</div>
 <div class="op-grid">
@@ -182,7 +164,7 @@ header nav:not(#pageTabs), .topnav:not(#pageTabs), .legacy-nav, .main-nav-legacy
 <div class="toolbar"><button class="go" onclick="runOnePage()">產生 One-page Result</button><button onclick="resetOnePage()">重設</button><button onclick="printOnePage()">列印 / Save PDF</button></div>
 <div id="opResult" class="op-result"></div>
 </section><div class='pager'><button onclick="showPage('home')">← 上一頁</button><button onclick="showPage('pathogen')">下一頁 →</button></div></div><div class='page-pane ' id='page-pathogen' data-page='pathogen'><section class="panel v5hero" id="clinical-algorithm">
-<div class="v5tag">v5 · BEDSIDE CLINICAL ALGORITHM</div>
+
 <h2>Organism → Syndrome / Mechanism → Patient Caveats → Source Recommendation</h2>
 <div class="notice"><b>安全設計：</b>這個 algorithm 不自行創造 treatment recommendation。它依你選的 clinical situation 導向 guideline 對應 question，最後顯示 <b>完整 Suggested approach 原文</b>。Patient caveats 只提醒你哪些條件不能忽略，不會偷偷改寫 IDSA recommendation。</div>
 <div class="alg-grid">
@@ -994,19 +976,8 @@ header nav:not(#pageTabs), .topnav:not(#pageTabs), .legacy-nav, .main-nav-legacy
 <p><b>7.</b> IV fosfomycin: <i>E. coli</i> ≤8 µg/mL; <i>K. pneumoniae</i> ≤32 µg/mL.</p>
 <p><b>8.</b> Applies to <i>E. coli</i> urinary isolates only.</p>
 <p><b>9.</b> Piperacillin-tazobactam MIC 16/4 µg/mL = susceptible dose-dependent.</p>
-</div></section><div class='pager'><button onclick="showPage('guidance')">← 上一頁</button><button onclick="showPage('qa')">下一頁 →</button></div></div><div class='page-pane ' id='page-qa' data-page='qa'><section class="panel qa-panel" id="qa">
-<div class="kicker">CONTENT QA / RECOMMENDATION AUDIT</div><h2>Source Fidelity Audit</h2>
-<div class="qa-stats">
- <div><strong>41/41</strong><span>Suggested approaches matched after normalization of PDF page-number / line-break artifacts</span></div>
- <div><strong>32</strong><span>Table 2 antibiotic rows restored in the complete breakpoint table</span></div>
- <div><strong>9</strong><span>Breakpoint footnotes retained</span></div>
- <div><strong>10</strong><span>Rationale nuances promoted to bedside-visible warnings</span></div>
-</div>
-<div class="notice"><b>Audit rule:</b> source wording was not “corrected” with outside knowledge. Normalization only removes extraction artifacts such as page numbers and line-break hyphenation. Recommendation meaning remains tied to the uploaded 2026 IDSA Guidance.</div>
-<details><summary>查看 41 題逐題 QA 狀態</summary><div class="tablewrap"><table><thead><tr><th>Question</th><th>Located in PDF</th><th>Suggested approach</th></tr></thead><tbody><tr><td>Q 1.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.6</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 1.7</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.6</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 2.7</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.6</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.7</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 3.8</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.6</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 4.7</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 5.6</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.1</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.2</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.3</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.4</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.5</td><td>✓ Found</td><td>✓ Verified</td></tr><tr><td>Q 6.6</td><td>✓ Found</td><td>✓ Verified</td></tr></tbody></table></div></details>
-</section><section class="panel" id="nuances">
-<div class="kicker">RATIONALE MATTERS</div><h2>Critical Nuances That Change the Bedside Choice</h2>
-<p>這些不是新增 guideline recommendation，而是把原本藏在 Rationale 中、會改變實際選藥順位或適用情境的內容拉到前面。</p>
+</div></section><div class='pager'><button onclick="showPage('guidance')">← 上一頁</button><button onclick="showPage('qa')">下一頁 →</button></div></div><div class='page-pane ' id='page-qa' data-page='qa'><section class="panel" id="nuances">
+<div class="kicker">CLINICAL NUANCES</div><h2>Critical Nuances That Change the Bedside Choice</h2>
 <div class="nuance-grid">
 <div class="nuance">
  <div class="nhead"><b>ESBL-E invasive infection</b><span>Q1.3</span></div>
