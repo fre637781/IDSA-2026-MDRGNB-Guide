@@ -57,6 +57,12 @@ jobs:
           s = s.replace('source-faithful novel/major antibiotic matrix', 'Novel / Major Antibiotic Recommendation Matrix')
           s = s.replace('Source-faithful novel/major antibiotic matrix', 'Novel / Major Antibiotic Recommendation Matrix')
 
+          # Dose / breakpoint copy: conservative edits only. Preserve every dose, breakpoint, marker, and footnote.
+          s = s.replace('<div class="kicker">TABLE 1 QUICK REFERENCE</div><h2>Adult Dosing</h2>', '<div class="kicker">TABLE 1</div><h2>Adult Dosing</h2>')
+          s = s.replace('<p>適用於 guideline 所討論的 organisms / syndromes，且假設 normal renal and hepatic function；部分 dosing 與 FDA label 不同。Renal adjustment、pediatric dosing、CNS-specific dosing 請依原 guideline / supplemental material。</p>', '<p>適用於 guideline 所討論的 organisms / syndromes，並假設 normal renal and hepatic function。部分 dosing 與 FDA label 不同；renal adjustment、pediatric dosing 與 CNS-specific dosing 請參照原 guideline / supplemental material。</p>')
+          s = s.replace('<div class="kicker">SOURCE-AUDITED · TABLE 2</div><h2>2026 CLSI Susceptible Breakpoints — Complete Table</h2>', '<div class="kicker">CLSI 2026 · TABLE 2</div><h2>2026 CLSI Susceptible Breakpoints — Complete Table</h2>')
+          s = s.replace('<p>單位皆為 µg/mL。這一版已把先前 quick table 未列出的 agents 補齊，並保留 guideline Table 2 的 footnote markers。</p>', '<p>單位皆為 µg/mL。表格保留 guideline Table 2 的完整 agents 與 footnote markers；breakpoint interpretation 請同時參照下方 footnotes。</p>')
+
           # Remove obsolete CSS that only supported internal QA/version badges.
           s = re.sub(r'\.qa-stats\{.*?\}\s*\.qa-stats>div\{.*?\}\s*\.qa-stats strong\{.*?\}\s*\.qa-stats span\{.*?\}\s*', '', s, count=1, flags=re.S)
           s = re.sub(r'\.v5tag\{.*?\}\s*', '', s, count=1, flags=re.S)
@@ -93,5 +99,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Polish public guide copy'
+          git commit -m 'Conservatively polish dosing and breakpoint copy'
           git push
