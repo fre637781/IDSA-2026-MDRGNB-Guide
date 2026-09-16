@@ -63,6 +63,26 @@ jobs:
           s = s.replace('<div class="kicker">SOURCE-AUDITED · TABLE 2</div><h2>2026 CLSI Susceptible Breakpoints — Complete Table</h2>', '<div class="kicker">CLSI 2026 · TABLE 2</div><h2>2026 CLSI Susceptible Breakpoints — Complete Table</h2>')
           s = s.replace('<p>單位皆為 µg/mL。這一版已把先前 quick table 未列出的 agents 補齊，並保留 guideline Table 2 的 footnote markers。</p>', '<p>單位皆為 µg/mL。表格保留 guideline Table 2 的完整 agents 與 footnote markers；breakpoint interpretation 請同時參照下方 footnotes。</p>')
 
+          # Reference / navigation wording: remove development-history language only.
+          public_replacements = {
+              'QUICK REFERENCE': 'REFERENCE',
+              'REFERENCE QUICK VIEW': 'REFERENCE',
+              'FINAL REFERENCE': 'REFERENCE',
+              'FINAL NOTES': 'NOTES',
+              'FINAL CHECK': 'CHECK',
+              'VALIDATED REFERENCE': 'REFERENCE',
+              'SOURCE-AUDITED': 'SOURCE',
+              'SOURCE-FAITHFUL': 'SOURCE-BASED',
+              'source-audited': 'source-based',
+              'source-faithful': 'source-based',
+          }
+          for old, new in public_replacements.items():
+              s = s.replace(old, new)
+
+          # Remove common version/build prefixes only when they are UI labels; never touch clinical question numbering.
+          s = re.sub(r'(<div class="kicker">)v\d+\s*[·—-]\s*', r'\1', s, flags=re.I)
+          s = re.sub(r'(<span class="kicker">)v\d+\s*[·—-]\s*', r'\1', s, flags=re.I)
+
           # Remove obsolete CSS that only supported internal QA/version badges.
           s = re.sub(r'\.qa-stats\{.*?\}\s*\.qa-stats>div\{.*?\}\s*\.qa-stats strong\{.*?\}\s*\.qa-stats span\{.*?\}\s*', '', s, count=1, flags=re.S)
           s = re.sub(r'\.v5tag\{.*?\}\s*', '', s, count=1, flags=re.S)
@@ -99,5 +119,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git commit -m 'Conservatively polish dosing and breakpoint copy'
+          git commit -m 'Conservatively polish reference and navigation copy'
           git push
