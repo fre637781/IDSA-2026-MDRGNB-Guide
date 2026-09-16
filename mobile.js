@@ -5,6 +5,7 @@
   function isMobile(){ return window.matchMedia('(max-width:760px)').matches; }
 
   function ensureHeadMetadata(){
+    document.title='IDSA 2026 MDRGNB Interactive Bedside Guide';
     if(!document.querySelector('link[rel="manifest"]')){
       var manifest=document.createElement('link');
       manifest.rel='manifest'; manifest.href='manifest.webmanifest';
@@ -27,6 +28,22 @@
       canonical.href='https://fre637781.github.io/IDSA-2026-MDRGNB-Guide/';
       document.head.appendChild(canonical);
     }
+  }
+
+  function cleanConstructionCopy(){
+    /* Remove development/version badges only; clinical content is untouched. */
+    document.querySelectorAll('.v5tag').forEach(function(el){ el.remove(); });
+
+    /* Strip build/version suffixes from headings without changing their clinical wording. */
+    document.querySelectorAll('h1,h2,h3,.lead,.kicker').forEach(function(el){
+      if(el.children.length) return;
+      var t=el.textContent;
+      var cleaned=t
+        .replace(/\s*[—·|]\s*Final Validated Edition\b/gi,'')
+        .replace(/\s*[—·|]\s*Single Navigation\b/gi,'')
+        .replace(/^\s*v\d+\s+(?=(?:Bedside|Clinical|One-page|One Page|Treatment|Algorithm))/i,'');
+      if(cleaned!==t) el.textContent=cleaned.trim();
+    });
   }
 
   function registerServiceWorker(){
@@ -146,6 +163,7 @@
 
   function init(){
     ensureHeadMetadata();
+    cleanConstructionCopy();
     makeBottomNav();
     makeTopButton();
     addScrollHints();
